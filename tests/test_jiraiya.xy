@@ -1,0 +1,51 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,duplicate-code,too-many-locals
+from unittest.mock import patch
+import unittest.mock
+import unittest
+from click.testing import CliRunner
+from jiraiya import display
+from jiraiya import cli
+
+
+class TestJiraiya(unittest.TestCase):
+
+    @patch("jiraiya.load")
+    @patch("jiraiya.init")
+    def test_display(self, func_init, func_load):  # pylint: disable=too-many-arguments
+
+        mock_logger = unittest.mock.Mock()
+
+        func_init.return_value = mock_logger
+        func_load.return_value = {"text": "Hello World"}
+
+        display(conf_file="jiraiya.yaml", reverse=False, transformation="lower")
+
+    @patch("jiraiya.load")
+    @patch("jiraiya.init")
+    def test_display_with_non_default_args(  # pylint: disable=too-many-arguments
+        self, func_init, func_load
+    ):
+
+        mock_logger = unittest.mock.Mock()
+
+        func_init.return_value = mock_logger
+        func_load.return_value = {"text": "Hello World"}
+
+        display(conf_file="jiraiya.yaml", reverse=True, transformation="upper")
+
+    @patch("jiraiya.display")
+    def test_cli(self, func_display):  # pylint: disable=too-many-arguments
+
+        func_display.return_value = None
+
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            ["--conf-file", "jiraiya.yaml", "--reverse", "--transformation", "lower"],
+        )
+        assert not result.exception
+        assert result.exit_code == 0
+        assert result.output == ""
+
+        # should delegate call to display
+        func_display.assert_called_once_with("jiraiya.yaml", True, "lower")
