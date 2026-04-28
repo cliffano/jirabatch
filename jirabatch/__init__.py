@@ -1,6 +1,6 @@
 # pylint: disable=too-many-locals
 """
-jiraiya
+jirabatch
 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
 ... .
 """
@@ -30,7 +30,7 @@ def create_jira_issues(conf_file: str, issues_file: str, batch_size: int) -> Non
 @click.command()
 @click.option(
     "--conf-file",
-    default="jiraiya.yaml",
+    default="jirabatch.yaml",
     show_default=True,
     type=str,
     help="Configuration file path",
@@ -49,7 +49,7 @@ def create_jira_issues(conf_file: str, issues_file: str, batch_size: int) -> Non
     type=int,
     help="Maximum number of issues to be created in a single batch",
 )
-@click.version_option(package_name="jiraiya", prog_name="jiraiya")
+@click.version_option(package_name="jirabatch", prog_name="jirabatch")
 def cli(conf_file: str, issues_file: str, batch_size: int) -> None:
     """Create multiple Jira issues.
     Issue details are defined in the issues file,

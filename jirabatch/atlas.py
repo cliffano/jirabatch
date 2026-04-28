@@ -39,7 +39,9 @@ class Atlas:
 
         url = self.jira._get_url("issue/bulk")  # pylint: disable=protected-access
         try:
-            r = self.jira._session.post(url, data=json.dumps(data))  # pylint: disable=protected-access
+            r = self.jira._session.post(  # pylint: disable=protected-access
+                url, data=json.dumps(data)
+            )
             raw = json_loads(r)
         except JIRAError as je:
             if je.status_code == 400 and je.response is not None:
@@ -59,23 +61,27 @@ class Atlas:
         issues_queue = list(raw.get("issues", []))
         for index, fields in enumerate(field_list):
             if index in errors:
-                issue_list.append({
-                    "status": "Error",
-                    "error": errors[index]["errors"],
-                    "error_messages": errors[index]["errorMessages"],
-                    "issue": None,
-                    "input_fields": fields,
-                })
+                issue_list.append(
+                    {
+                        "status": "Error",
+                        "error": errors[index]["errors"],
+                        "error_messages": errors[index]["errorMessages"],
+                        "issue": None,
+                        "input_fields": fields,
+                    }
+                )
             else:
                 issue_raw = issues_queue.pop(0)
                 issue = self.jira.issue(issue_raw["key"])
-                issue_list.append({
-                    "status": "Success",
-                    "issue": issue,
-                    "error": None,
-                    "error_messages": [],
-                    "input_fields": fields,
-                })
+                issue_list.append(
+                    {
+                        "status": "Success",
+                        "issue": issue,
+                        "error": None,
+                        "error_messages": [],
+                        "input_fields": fields,
+                    }
+                )
         return issue_list
 
     def create_jira_issues(self, issues: dict, batch_size: int) -> None:
@@ -141,14 +147,19 @@ class Atlas:
                     if absolute_index in subtask_map:
                         for subtask in subtask_map[absolute_index]:
                             subtask_fields = {**default_fields, **subtask}
-                            subtask_fields["issuetype"] = subtask_fields.get("issuetype", "Subtask")
+                            subtask_fields["issuetype"] = subtask_fields.get(
+                                "issuetype", "Subtask"
+                            )
                             subtask_fields["parent"] = created_issue.key
                             subtask_fields.pop("subtasks", None)
-                            pending_subtasks.append(self._merge_jira_fields(subtask_fields))
+                            pending_subtasks.append(
+                                self._merge_jira_fields(subtask_fields)
+                            )
                 else:
                     errors_str = self._format_errors(result)
                     fields_str = "\n".join(
-                        f"    {key}: {value}" for key, value in result["input_fields"].items()
+                        f"    {key}: {value}"
+                        for key, value in result["input_fields"].items()
                     )
                     self.logger.error(
                         "Failed to create issue:\nErrors:\n%s\nFields:\n%s",
@@ -174,7 +185,8 @@ class Atlas:
                     else:
                         errors_str = self._format_errors(result)
                         fields_str = "\n".join(
-                            f"    {key}: {value}" for key, value in result["input_fields"].items()
+                            f"    {key}: {value}"
+                            for key, value in result["input_fields"].items()
                         )
                         self.logger.error(
                             "Failed to create subtask:\nErrors:\n%s\nFields:\n%s",

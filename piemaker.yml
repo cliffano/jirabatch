@@ -1,13 +1,13 @@
 ---
 author: Cliffano Subagio
-package_name: jiraiya
+package_name: jirabatch
 generator:
   component: python-cli
   inputs:
-    project_id: jiraiya
-    project_name: Jiraiya
-    project_desc: Batch Jira issues creator via YAML definition
+    project_id: jirabatch
+    project_name: jirabatch
+    project_desc: Batch Jira issues creation via YAML definition
     author_name: Cliffano Subagio
     author_email: cliffano@gmail.com
     github_id: cliffano
-    github_repo: jiraiya
+    github_repo: jira-batch

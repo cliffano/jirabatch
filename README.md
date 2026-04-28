@@ -1,46 +1,35 @@
-# jiraiya
-<img align="right" src="https://raw.github.com/cliffano/jiraiya/main/avatar.jpg" alt="Avatar"/>
+![Avatar](avatar.jpg)
 
-[![Build Status](https://github.com/cliffano/jiraiya/workflows/CI/badge.svg)](https://github.com/cliffano/jiraiya/actions?query=workflow%3ACI)
-[![Security Status](https://snyk.io/test/github/cliffano/jiraiya/badge.svg)](https://snyk.io/test/github/cliffano/jiraiya)
-[![Dependencies Status](https://img.shields.io/librariesio/release/pypi/jiraiya)](https://libraries.io/github/cliffano/jiraiya)
-[![Published Version](https://img.shields.io/pypi/v/jiraiya.svg)](https://pypi.python.org/pypi/jiraiya)
-<br/>
+[![Build Status](https://github.com/cliffano/jira-batch/workflows/CI/badge.svg)](https://github.com/cliffano/jira-batch/actions?query=workflow%3ACI)
+[![Security Status](https://snyk.io/test/github/cliffano/jira-batch/badge.svg)](https://snyk.io/test/github/cliffano/jira-batch)
+[![Dependencies Status](https://img.shields.io/librariesio/release/pypi/jirabatch)](https://libraries.io/github/cliffano/jira-batch)
+[![Published Version](https://img.shields.io/pypi/v/jirabatch.svg)](https://pypi.python.org/pypi/jirabatch)
 
-Jiraiya
--------
+# JiraBatch
 
-Jiraiya is a batch Jira issues creator via YAML definition.
+JiraBatch is a batch Jira issues creator.
 
-Installation
-------------
+Define the issues in 
 
-    pip3 install jiraiya
+## Installation
 
-Usage
------
+    pip3 install jirabatch
 
-Create a configuration file, e.g. `jiraiya.yaml`:
+## Usage
 
-    ---
-    text: Hello World
+Create a configuration file, e.g. `jirabatch.yaml`, and then create an issues file, e.g. `issues.yaml` .
 
-Run jiraiya with specified config file:
+Run jirabatch with specified config file and issues file:
 
-    jiraiya --conf-file jiraiya.yaml
-
-Run jiraiya with specified config file and custom flags:
-
-    jiraiya --conf-file jiraiya.yaml --reverse --transformation upper
+    jirabatch --conf-file jiraiya.yaml --issues-file issues.yaml
 
 Show help guide:
 
-    jiraiya --help
+    jirabatch --help
 
-Configuration
--------------
+## Configuration
 
-These are the configuration properties that you can use with `jiraiya` CLI.
+These are the configuration properties that you can use with `jirabatch` CLI.
 Some example configuration files are available on [examples](examples) folder.
 
 | Property | Type | Description | Example |
@@ -54,10 +43,9 @@ Colophon
 
 Build reports:
 
-* [Lint report](https://cliffano.github.io/jiraiya/lint/pylint/index.html)
-* [Code complexity report](https://cliffano.github.io/jiraiya/complexity/wily/index.html)
-* [Unit tests report](https://cliffano.github.io/jiraiya/test/pytest/index.html)
-* [Test coverage report](https://cliffano.github.io/jiraiya/coverage/coverage/index.html)
-* [Integration tests report](https://cliffano.github.io/jiraiya/test-integration/pytest/index.html)
-* [API Documentation](https://cliffano.github.io/jiraiya/doc/sphinx/index.html)
->>>>>>> c735851 (Initial skeleton commit.)
+* [Lint report](https://cliffano.github.io/jirabatch/lint/pylint/index.html)
+* [Code complexity report](https://cliffano.github.io/jirabatch/complexity/wily/index.html)
+* [Unit tests report](https://cliffano.github.io/jirabatch/test/pytest/index.html)
+* [Test coverage report](https://cliffano.github.io/jirabatch/coverage/coverage/index.html)
+* [Integration tests report](https://cliffano.github.io/jirabatch/test-integration/pytest/index.html)
+* [API Documentation](https://cliffano.github.io/jirabatch/doc/sphinx/index.html)

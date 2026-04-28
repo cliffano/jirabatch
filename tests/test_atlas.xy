@@ -2,7 +2,7 @@
 from unittest.mock import MagicMock, patch, call
 import unittest
 
-from jiraiya.atlas import Atlas
+from jirabatch.atlas import Atlas
 
 
 class TestBuildFields(unittest.TestCase):
@@ -234,8 +234,8 @@ class TestBuildFields(unittest.TestCase):
 class TestCreateJiraIssues(unittest.TestCase):
     """Tests for Atlas.create_jira_issues method."""
 
-    @patch("jiraiya.atlas.JIRA")
-    @patch("jiraiya.atlas.init")
+    @patch("jirabatch.atlas.JIRA")
+    @patch("jirabatch.atlas.init")
     def test_single_issue_success(self, mock_init, mock_jira_cls):
         mock_logger = MagicMock()
         mock_init.return_value = mock_logger
@@ -267,8 +267,8 @@ class TestCreateJiraIssues(unittest.TestCase):
             "Created issue %s: %s", "ENG-1", "A task"
         )
 
-    @patch("jiraiya.atlas.JIRA")
-    @patch("jiraiya.atlas.init")
+    @patch("jirabatch.atlas.JIRA")
+    @patch("jirabatch.atlas.init")
     def test_issue_failure_logs_error(self, mock_init, mock_jira_cls):
         mock_logger = MagicMock()
         mock_init.return_value = mock_logger
@@ -294,8 +294,8 @@ class TestCreateJiraIssues(unittest.TestCase):
         mock_logger.error.assert_called_once()
         assert "Field 'summary' is required" in mock_logger.error.call_args[0][1]
 
-    @patch("jiraiya.atlas.JIRA")
-    @patch("jiraiya.atlas.init")
+    @patch("jirabatch.atlas.JIRA")
+    @patch("jirabatch.atlas.init")
     def test_batching_over_max_batch_size(self, mock_init, mock_jira_cls):
         mock_logger = MagicMock()
         mock_init.return_value = mock_logger
@@ -337,8 +337,8 @@ class TestCreateJiraIssues(unittest.TestCase):
         assert len(first_batch.kwargs["field_list"]) == 50
         assert len(second_batch.kwargs["field_list"]) == 25
 
-    @patch("jiraiya.atlas.JIRA")
-    @patch("jiraiya.atlas.init")
+    @patch("jirabatch.atlas.JIRA")
+    @patch("jirabatch.atlas.init")
     def test_batching_with_custom_batch_size(self, mock_init, mock_jira_cls):
         mock_logger = MagicMock()
         mock_init.return_value = mock_logger
@@ -380,8 +380,8 @@ class TestCreateJiraIssues(unittest.TestCase):
         assert len(mock_jira.create_issues.call_args_list[1].kwargs["field_list"]) == 2
         assert len(mock_jira.create_issues.call_args_list[2].kwargs["field_list"]) == 1
 
-    @patch("jiraiya.atlas.JIRA")
-    @patch("jiraiya.atlas.init")
+    @patch("jirabatch.atlas.JIRA")
+    @patch("jirabatch.atlas.init")
     def test_mixed_success_and_failure(self, mock_init, mock_jira_cls):
         mock_logger = MagicMock()
         mock_init.return_value = mock_logger
@@ -419,8 +419,8 @@ class TestCreateJiraIssues(unittest.TestCase):
         mock_logger.info.assert_called_once()
         mock_logger.error.assert_called_once()
 
-    @patch("jiraiya.atlas.JIRA")
-    @patch("jiraiya.atlas.init")
+    @patch("jirabatch.atlas.JIRA")
+    @patch("jirabatch.atlas.init")
     def test_custom_fields_passed_through(self, mock_init, mock_jira_cls):
         mock_logger = MagicMock()
         mock_init.return_value = mock_logger

@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,duplicate-code,too-many-locals
 import logging
 import unittest
-from jiraiya.logger import init
+from jirabatch.logger import init
 
 
 class TesLogger(unittest.TestCase):
