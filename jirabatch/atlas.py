@@ -13,76 +13,25 @@ class Atlas:
     """This class represents an Atlassian Jira manager."""
 
     def __init__(self, conf: dict) -> None:
-        """Initialize Atlas."""
+        """Initialize Atlas with a Jira connection.
+
+        Connects to the Jira server specified in ``conf`` using basic authentication.
+        ``api_token`` is used as the credential when available, falling back to ``password``.
+
+        Args:
+            conf: A configuration dictionary with the following keys:
+
+                - ``url``: The base URL of the Jira server.
+                - ``user``: The Jira username or email address.
+                - ``api_token``: The Jira API token (preferred).
+                                 Falls back to ``password`` if absent.
+        """
 
         self.logger = init()
         self.jira = JIRA(
             server=conf["url"],
             basic_auth=(conf["user"], conf.get("api_token", conf.get("password"))),
         )
-
-    def _bulk_create_issues(self, field_list: list[dict]) -> list[dict]:
-        """Create issues via the Jira bulk API, capturing full error details.
-
-        Unlike ``JIRA.create_issues``, this method also captures
-        ``errorMessages`` from the API response, not just field-level
-        ``errors``.
-
-        Args:
-            field_list: A list of Jira field dicts, one per issue.
-
-        Returns:
-            A list of result dicts with keys ``status``, ``issue``,
-            ``error``, ``error_messages``, and ``input_fields``.
-        """
-        data = {"issueUpdates": [{"fields": fields} for fields in field_list]}
-
-        url = self.jira._get_url("issue/bulk")  # pylint: disable=protected-access
-        try:
-            r = self.jira._session.post(  # pylint: disable=protected-access
-                url, data=json.dumps(data)
-            )
-            raw = json_loads(r)
-        except JIRAError as je:
-            if je.status_code == 400 and je.response is not None:
-                raw = json.loads(je.response.text)
-            else:
-                raise
-
-        errors = {}
-        for error in raw.get("errors", []):
-            element_errors = error.get("elementErrors", {})
-            errors[error["failedElementNumber"]] = {
-                "errors": element_errors.get("errors", {}),
-                "errorMessages": element_errors.get("errorMessages", []),
-            }
-
-        issue_list = []
-        issues_queue = list(raw.get("issues", []))
-        for index, fields in enumerate(field_list):
-            if index in errors:
-                issue_list.append(
-                    {
-                        "status": "Error",
-                        "error": errors[index]["errors"],
-                        "error_messages": errors[index]["errorMessages"],
-                        "issue": None,
-                        "input_fields": fields,
-                    }
-                )
-            else:
-                issue_raw = issues_queue.pop(0)
-                issue = self.jira.issue(issue_raw["key"])
-                issue_list.append(
-                    {
-                        "status": "Success",
-                        "issue": issue,
-                        "error": None,
-                        "error_messages": [],
-                        "input_fields": fields,
-                    }
-                )
-        return issue_list
 
     def create_jira_issues(self, issues: dict, batch_size: int) -> None:
         """Create Jira issues in batches from a dictionary configuration.
@@ -110,40 +59,50 @@ class Atlas:
             batch_size: Maximum number of issues to create per API call.
         """
 
+        # Get configured fields from issues file
         default_fields = issues.get("defaults", {})
         issues_fields = issues.get("issues", [])
 
-        merged_fields = []
+        # Construct a list of Jira field dicts for each issue, merging with defaults and
+        # extracting subtasks into a separate map to be processed after parent issues are created
+        jira_fields_list = []
         subtask_map = {}
         for index, issue_fields in enumerate(issues_fields):
-            combined = {**default_fields, **issue_fields}
-            subtasks = combined.pop("subtasks", None)
-            merged_fields.append(self._merge_jira_fields(combined))
+            combined_fields = {**default_fields, **issue_fields}
+            subtasks = combined_fields.pop("subtasks", None)
+            jira_fields_list.append(self._prepare_jira_fields(combined_fields))
             if subtasks:
                 subtask_map[index] = subtasks
 
+        # Placeholder for any pending subtasks to be created
+        # after their parent issues are successfully created
         pending_subtasks = []
 
-        for batch_start in range(0, len(merged_fields), batch_size):
+        for batch_start in range(0, len(jira_fields_list), batch_size):
 
-            batch = merged_fields[batch_start : batch_start + batch_size]
+            batch = jira_fields_list[batch_start : batch_start + batch_size]
             self.logger.info(f"Processing a batch of {len(batch)} issue(s)...")
 
-            results = self._bulk_create_issues(field_list=batch)
+            api_results_list = self._bulk_create_issues(field_list=batch)
 
-            for batch_index, result in enumerate(results):
+            for batch_index, api_result in enumerate(api_results_list):
                 absolute_index = batch_start + batch_index
-                self.logger.debug(f"Result: {result}")
-                if result["status"] == "Success":
-                    created_issue = result["issue"]
+                self.logger.debug(f"Result: {api_result}")
+                if api_result["status"] == "Success":
+                    created_issue = api_result["issue"]
                     self.logger.info(
                         "Created issue %s: %s",
                         created_issue.key,
                         created_issue.fields.summary,
                     )
                     self.logger.debug(
-                        "Issue %s fields: %s", created_issue.key, result["input_fields"]
+                        "Issue %s fields: %s",
+                        created_issue.key,
+                        api_result["input_fields"],
                     )
+                    # If the issue has subtasks defined in the configuration,
+                    # prepare their field definitions and add them to the pending
+                    # subtasks list for later creation
                     if absolute_index in subtask_map:
                         for subtask in subtask_map[absolute_index]:
                             subtask_fields = {**default_fields, **subtask}
@@ -153,13 +112,13 @@ class Atlas:
                             subtask_fields["parent"] = created_issue.key
                             subtask_fields.pop("subtasks", None)
                             pending_subtasks.append(
-                                self._merge_jira_fields(subtask_fields)
+                                self._prepare_jira_fields(subtask_fields)
                             )
                 else:
-                    errors_str = self._format_errors(result)
+                    errors_str = self._format_errors(api_result)
                     fields_str = "\n".join(
                         f"    {key}: {value}"
-                        for key, value in result["input_fields"].items()
+                        for key, value in api_result["input_fields"].items()
                     )
                     self.logger.error(
                         "Failed to create issue:\nErrors:\n%s\nFields:\n%s",
@@ -167,26 +126,29 @@ class Atlas:
                         fields_str,
                     )
 
+        # Create any pending subtasks after all parent issues have been processed,
+        # so that subtasks of successfully created parent issues can be created while
+        # subtasks of failed parent issues are not attempted
         if pending_subtasks:
             self.logger.info(f"Creating {len(pending_subtasks)} subtask(s)...")
             for batch_start in range(0, len(pending_subtasks), batch_size):
                 batch = pending_subtasks[batch_start : batch_start + batch_size]
                 self.logger.info(f"Processing a batch of {len(batch)} subtask(s)...")
-                results = self._bulk_create_issues(field_list=batch)
-                for result in results:
-                    self.logger.debug(f"Result: {result}")
-                    if result["status"] == "Success":
-                        created_issue = result["issue"]
+                api_results_list = self._bulk_create_issues(field_list=batch)
+                for api_result in api_results_list:
+                    self.logger.debug(f"Result: {api_result}")
+                    if api_result["status"] == "Success":
+                        created_issue = api_result["issue"]
                         self.logger.info(
                             "Created subtask %s: %s",
                             created_issue.key,
                             created_issue.fields.summary,
                         )
                     else:
-                        errors_str = self._format_errors(result)
+                        errors_str = self._format_errors(api_result)
                         fields_str = "\n".join(
-                            f"    {key}: {value}"
-                            for key, value in result["input_fields"].items()
+                            f"- {key}: {value}"
+                            for key, value in api_result["input_fields"].items()
                         )
                         self.logger.error(
                             "Failed to create subtask:\nErrors:\n%s\nFields:\n%s",
@@ -194,91 +156,167 @@ class Atlas:
                             fields_str,
                         )
 
+    def _bulk_create_issues(self, field_list: list[dict]) -> list[dict]:
+        """Create issues via the Jira bulk API, capturing full error details.
+
+        Unlike ``JIRA.create_issues``, this method also captures
+        ``errorMessages`` from the API response, not just field-level
+        ``errors``.
+
+        Args:
+            field_list: A list of Jira field dicts, one per issue.
+
+        Returns:
+            A list of result dicts with keys ``status``, ``issue``,
+            ``error``, ``error_messages``, and ``input_fields``.
+        """
+
+        # Make API request to create issues in bulk, capturing
+        # both field-level errors and general error messages
+        api_request_payload = {
+            "issueUpdates": [{"fields": fields} for fields in field_list]
+        }
+        url = self.jira._get_url("issue/bulk")  # pylint: disable=protected-access
+        try:
+            raw_api_response = (
+                self.jira._session.post(  # pylint: disable=protected-access
+                    url, data=json.dumps(api_request_payload)
+                )
+            )
+            api_response = json_loads(raw_api_response)
+        except JIRAError as je:
+            if je.status_code == 400 and je.response is not None:
+                api_response = json.loads(je.response.text)
+            else:
+                raise
+        errors = {}
+        for error in api_response.get("errors", []):
+            element_errors = error.get("elementErrors", {})
+            errors[error["failedElementNumber"]] = {
+                "errors": element_errors.get("errors", {}),
+                "errorMessages": element_errors.get("errorMessages", []),
+            }
+
+        # Build result list by pairing each input field with
+        # - (Success result) its created issue
+        # - (Error result) its error details
+        api_results_list = []
+        issues_queue = list(api_response.get("issues", []))
+        for index, fields in enumerate(field_list):
+            # Construct Error result
+            if index in errors:
+                api_results_list.append(
+                    {
+                        "status": "Error",
+                        "error": errors[index]["errors"],
+                        "error_messages": errors[index]["errorMessages"],
+                        "issue": None,
+                        "input_fields": fields,
+                    }
+                )
+            # Construct Success result
+            else:
+                issue_raw = issues_queue.pop(0)
+                issue = self.jira.issue(issue_raw["key"])
+                api_results_list.append(
+                    {
+                        "status": "Success",
+                        "issue": issue,
+                        "error": None,
+                        "error_messages": [],
+                        "input_fields": fields,
+                    }
+                )
+        return api_results_list
+
     @staticmethod
-    def _format_errors(result: dict) -> str:
+    def _format_errors(api_result: dict) -> str:
         """Format error details from a bulk create result into a readable string.
 
         Args:
-            result: A result dict from ``_bulk_create_issues``.
+            api_result: A result dict from ``_bulk_create_issues``.
 
         Returns:
             A formatted error string.
         """
         lines = []
-        error = result.get("error", {})
+
+        # Format error details from "error" field
+        error = api_result.get("error", {})
         if error:
             for field, msg in error.items():
-                lines.append(f"    {field}: {msg}")
-        for msg in result.get("error_messages", []):
-            lines.append(f"    {msg}")
+                lines.append(f"- {field}: {msg}")
+
+        # Format error details from "error_messages" field
+        for msg in api_result.get("error_messages", []):
+            lines.append(f"- {msg}")
+
+        # Add placeholder message when API result doesn't contain error-related field
         if not lines:
-            lines.append("    (no error details returned by Jira)")
+            lines.append("(no error details returned by Jira)")
+
         return "\n".join(lines)
 
     @staticmethod
-    def _merge_jira_fields(issue: dict) -> dict:
-        """Build a Jira-compatible issue fields dictionary from an issue definition.
+    def _prepare_jira_fields(config_fields: dict) -> dict:
+        """Build a Jira-compatible issue fields dictionary from an issue configuration.
 
         Args:
-            issue: A dictionary describing a single issue with keys such as
+            config_fields: A dictionary describing a single issue with keys such as
                 ``project``, ``summary``, ``issuetype``, and optional metadata.
 
         Returns:
             A dictionary of fields ready to be passed to the Jira API.
         """
 
-        fields = {
-            "project": {"key": issue["project"]},
-            "issuetype": {"name": issue["issuetype"]},
-            "summary": issue["summary"],
-            "description": issue.get("description"),
+        # Initialise Jira fields with required fields and common optional fields
+        jira_fields = {
+            "project": {"key": config_fields["project"]},
+            "issuetype": {"name": config_fields["issuetype"]},
+            "summary": config_fields["summary"],
+            "description": config_fields.get("description"),
         }
 
-        if "reporter" in issue:
-            fields["reporter"] = {"accountId": issue["reporter"]}
+        # Add optional fields with AS-IS value
+        for field_name in ["labels", "environment", "timetracking"]:
+            if field_name in config_fields:
+                jira_fields[field_name] = config_fields[field_name]
 
-        if "assignee" in issue:
-            fields["assignee"] = {"accountId": issue["assignee"]}
+        # Add optional fields with stringified formatting
+        for field_name in ["duedate"]:
+            if field_name in config_fields:
+                jira_fields[field_name] = str(config_fields[field_name])
 
-        if "priority" in issue:
-            fields["priority"] = {"name": str(issue["priority"])}
+        # Add optional fields that require nested formatting with "accountId" key
+        for field_name in ["reporter", "assignee"]:
+            if field_name in config_fields:
+                jira_fields[field_name] = {"accountId": config_fields[field_name]}
 
-        if "labels" in issue:
-            fields["labels"] = issue["labels"]
+        # Add optional fields that require nested formatting with "key" key
+        # NOTE: parent is used when team managed, epic is used when company managed
+        for field_name in ["parent", "epic"]:
+            if field_name in config_fields:
+                jira_fields[field_name] = {"key": config_fields[field_name]}
 
-        if "components" in issue:
-            fields["components"] = [
-                {"name": component} for component in issue["components"]
-            ]
+        # Add optional fields that require nested formatting with "name" key and AS-IS value
+        for field_name in ["security"]:
+            if field_name in config_fields:
+                jira_fields[field_name] = {"name": config_fields[field_name]}
 
-        if "versions" in issue:
-            fields["versions"] = [{"name": version} for version in issue["versions"]]
+        # Add optional fields that require nested formatting with "name" key and stringified value
+        for field_name in ["priority"]:
+            if field_name in config_fields:
+                jira_fields[field_name] = {"name": str(config_fields[field_name])}
 
-        if "fixVersions" in issue:
-            fields["fixVersions"] = [
-                {"name": version} for version in issue["fixVersions"]
-            ]
+        # Add optional fields with a list of values that require nested formatting with "name" key
+        for field_name in ["components", "versions", "fixVersions"]:
+            if field_name in config_fields:
+                jira_fields[field_name] = [
+                    {"name": field_value} for field_value in config_fields[field_name]
+                ]
 
-        if "environment" in issue:
-            fields["environment"] = issue["environment"]
+        # Add any custom fields defined in the issue, which may have arbitrary formatting
+        if "customFields" in config_fields:
+            jira_fields.update(config_fields["customFields"])
 
-        if "dueDate" in issue:
-            fields["duedate"] = str(issue["dueDate"])
-
-        if "timetracking" in issue:
-            fields["timetracking"] = issue["timetracking"]
-
-        if "security" in issue:
-            fields["security"] = {"name": issue["security"]}
-
-        if "parent" in issue:
-            fields["parent"] = {"key": issue["parent"]}
-
-        if "epic" in issue:
-            # parent is used when team managed, epic is used when company managed
-            fields["parent"] = {"key": issue["epic"]}
-
-        if "customFields" in issue:
-            fields.update(issue["customFields"])
-
-        return fields
+        return jira_fields
