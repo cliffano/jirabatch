@@ -1,0 +1,4 @@
+---
+url: https://someuser.atlassian.net
+user: someuser@example.com
+api_token: someinexistingtoken12345

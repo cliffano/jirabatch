@@ -1,0 +1,20 @@
+---
+issues:
+  - summary: "Issue 1 summary"
+    description: "Description for issue 1"
+    issuetype: "Task"
+    project: "TEST"
+    subtasks:
+      - summary: "Subtask 1 for Issue 1"
+        description: "Description for subtask 1 of issue 1"
+        issuetype: "Sub-task"
+        project: "TEST"
+      - summary: "Subtask 2 for Issue 1"
+        description: "Description for subtask 2 of issue 1"
+        issuetype: "Sub-task"
+        project: "TEST"
+
+  - summary: "Issue 2 summary with missing fields to trigger errors"
+    description: "Description for issue 2"
+    issuetype: "Task"
+    project: "TEST"

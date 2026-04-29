@@ -1,5 +1,5 @@
 # Start of Studio gitignore
-examples/
+examples-tmp/
 core
 docs/
 stage/
