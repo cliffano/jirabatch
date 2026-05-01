@@ -163,3 +163,36 @@ The Makefile (PieMaker) orchestrates standard build targets, with `make ci` runn
 All steps must pass before code is merged. Developers should run `make ci` locally before pushing to ensure the CI pipeline will pass.
 
 After the code is merged, the CI pipeline will run as Github CI workflow.
+
+## GitHub Workflows
+
+This repository defines the following workflows under `.github/workflows/`:
+
+- **CI** (`ci-workflow.yaml`)
+	- **Trigger**: `push`, `pull_request`, and manual `workflow_dispatch`.
+	- **Purpose**: Runs the full quality pipeline (`make ci`) across a Python version matrix (`3.10`, `3.12`, `3.14`), runs example tests, and publishes generated docs to GitHub Pages.
+
+- **CodeQL** (`codeql-analysis.yml`)
+	- **Trigger**: `push` to `main`, `pull_request` targeting `main`, and weekly scheduled run (`cron`).
+	- **Purpose**: Performs GitHub CodeQL static security analysis for Python and uploads code scanning results.
+
+- **Publish** (`publish-workflow.yaml`)
+	- **Trigger**: `push` of any Git tag.
+	- **Purpose**: Builds and installs the package, then publishes it using `make publish` with `PYPI_TOKEN` secret.
+
+- **Release Major** (`release-major-workflow.yaml`)
+	- **Trigger**: Manual `workflow_dispatch`.
+	- **Purpose**: Creates a major release via `cliffano/release-action` (`release_type: major`).
+
+- **Release Minor** (`release-minor-workflow.yaml`)
+	- **Trigger**: Manual `workflow_dispatch`.
+	- **Purpose**: Creates a minor release via `cliffano/release-action` (`release_type: minor`).
+
+- **Release Patch** (`release-patch-workflow.yaml`)
+	- **Trigger**: Manual `workflow_dispatch`.
+	- **Purpose**: Creates a patch release via `cliffano/release-action` (`release_type: patch`).
+
+- **Upgrade Deps** (`upgrade-deps-workflow.yaml`)
+	- **Trigger**: Manual `workflow_dispatch`.
+	- **Purpose**: Upgrades dependencies, runs the main validation/build targets, commits dependency updates, and pushes changes back to the current branch.
+
