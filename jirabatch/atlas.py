@@ -292,11 +292,12 @@ class Atlas:
             if field_name in config_fields:
                 jira_fields[field_name] = {"accountId": config_fields[field_name]}
 
-        # Add optional fields that require nested formatting with "key" key
-        # NOTE: parent is used when team managed, epic is used when company managed
-        for field_name in ["parent", "epic"]:
-            if field_name in config_fields:
-                jira_fields[field_name] = {"key": config_fields[field_name]}
+        # Add optional parent reference with nested formatting using "key".
+        # `epic` is normalized to `parent` so downstream payload handling is consistent.
+        if "parent" in config_fields:
+            jira_fields["parent"] = {"key": config_fields["parent"]}
+        elif "epic" in config_fields:
+            jira_fields["parent"] = {"key": config_fields["epic"]}
 
         # Add optional fields that require nested formatting with "name" key and AS-IS value
         for field_name in ["security"]:
