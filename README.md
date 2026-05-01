@@ -1,8 +1,8 @@
 ![Avatar](avatar.jpg)
 
-[![Build Status](https://github.com/cliffano/jira-batch/workflows/CI/badge.svg)](https://github.com/cliffano/jira-batch/actions?query=workflow%3ACI)
-[![Security Status](https://snyk.io/test/github/cliffano/jira-batch/badge.svg)](https://snyk.io/test/github/cliffano/jira-batch)
-[![Dependencies Status](https://img.shields.io/librariesio/release/pypi/jirabatch)](https://libraries.io/github/cliffano/jira-batch)
+[![Build Status](https://github.com/cliffano/jirabatch/workflows/CI/badge.svg)](https://github.com/cliffano/jirabatch/actions?query=workflow%3ACI)
+[![Security Status](https://snyk.io/test/github/cliffano/jirabatch/badge.svg)](https://snyk.io/test/github/cliffano/jirabatch)
+[![Dependencies Status](https://img.shields.io/librariesio/release/pypi/jirabatch)](https://libraries.io/github/cliffano/jirabatch)
 [![Published Version](https://img.shields.io/pypi/v/jirabatch.svg)](https://pypi.python.org/pypi/jirabatch)
 
 # JiraBatch

@@ -12,9 +12,9 @@ description = "Create Jira tickets via YAML"
 license = "Apache-2.0"
 authors = [ "Cliffano Subagio <cliffano@gmail.com>" ]
 readme = "README.md"
-homepage = "https://github.com/cliffano/jira-batch"
-repository = "https://github.com/cliffano/jira-batch"
-documentation = "https://github.com/cliffano/jira-batch"
+homepage = "https://github.com/cliffano/jirabatch"
+repository = "https://github.com/cliffano/jirabatch"
+documentation = "https://github.com/cliffano/jirabatch"
 keywords = [ "jirabatch", "jira", "issues" ]
 classifiers = [
   "Programming Language :: Python :: 3",
