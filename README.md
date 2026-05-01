@@ -21,7 +21,7 @@ Create a configuration file, e.g. `jirabatch.yaml`, and then create an issues fi
 
 Run jirabatch with specified config file and issues file:
 
-    jirabatch --conf-file jiraiya.yaml --issues-file issues.yaml
+    jirabatch --conf-file jirabatch.yaml --issues-file issues.yaml
 
 Show help guide:
 
