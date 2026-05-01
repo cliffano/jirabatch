@@ -7,7 +7,7 @@
 
 # JiraBatch
 
-JiraBatch is a batch Jira issues creator.
+Jira Batch is a batch Jira issues creator.
 
 Define the issues in 
 
@@ -32,9 +32,42 @@ Show help guide:
 These are the configuration properties that you can use with `jirabatch` CLI.
 Some example configuration files are available on [examples](examples) folder.
 
-| Property | Type | Description | Example |
-|----------|------|-------------|---------|
-| `text` | String | The message text | Hello World |
+Jira Batch configuration properties:
+
+| Property | Type | Required | Description | Example |
+|----------|------|----------|-------------|---------|
+| `url` | String | Yes | The base URL of the Jira server | `https://someorg.atlassian.net` |
+| `user` | String | Yes | The Jira username or email address | `someuser@example.com` |
+| `api_token` | String | Yes* | The Jira API token used for authentication. Takes precedence over `password` | `sometoken12345` |
+| `password` | String | Yes* | The Jira account password. Used as fallback when `api_token` is not set | `somepassword` |
+
+Issues configuration properties:
+
+| Property | Type | Required | Description | Example |
+|----------|------|----------|-------------|---------|
+| `defaults` | Object | No | Default field values merged into every entry in `issues[]` | `{ project: "ENG", issuetype: "Task" }` |
+| `issues[]` | Array | Yes | List of Jira issues to create | `[{ summary: "Issue summary" }]` |
+| `issues[].project` | String | Yes* | Jira project key | `ENG` |
+| `issues[].issuetype` | String | Yes* | Jira issue type name | `Task` |
+| `issues[].summary` | String | Yes* | Jira issue summary | `Rotate SSH key` |
+| `issues[].description` | String | No | Jira issue description | `Rotate SSH key before expiry` |
+| `issues[].reporter` | String | No | Reporter account ID | `5b10a2844c20165700ede21g` |
+| `issues[].assignee` | String | No | Assignee account ID | `5b10ac8d82e05b22cc7d4ef5` |
+| `issues[].priority` | String | No | Priority name | `High` |
+| `issues[].labels[]` | Array[String] | No | Labels to assign | `["infra", "security"]` |
+| `issues[].components[]` | Array[String] | No | Component names | `["Cloud", "Backend"]` |
+| `issues[].versions[]` | Array[String] | No | Affects version names | `["2026.1"]` |
+| `issues[].fixVersions[]` | Array[String] | No | Fix version names | `["2026.2"]` |
+| `issues[].environment` | String | No | Environment field value | `Production AWS us-east-1` |
+| `issues[].duedate` | String | No | Due date (sent as string) | `2026-04-01` |
+| `issues[].timetracking` | Object | No | Jira timetracking object | `{ originalEstimate: "3d", remainingEstimate: "2d" }` |
+| `issues[].security` | String | No | Security level name | `Internal` |
+| `issues[].parent` | String | No | Parent issue key | `ENG-100` |
+| `issues[].epic` | String | No | Epic issue key (normalized to parent) | `ENG-10` |
+| `issues[].customFields` | Object | No | Map of Jira custom field IDs to values | `{ customfield_10100: "Platform Team" }` |
+| `issues[].subtasks[]` | Array[Object] | No | Subtasks created after parent issue succeeds | `[{ summary: "Subtask 1" }]` |
+| `issues[].subtasks[].summary` | String | Yes | Subtask summary | `Update cert in service A` |
+| `issues[].subtasks[].issuetype` | String | No | Subtask issue type (defaults to `Subtask`) | `Sub-task` |
 
 Colophon
 --------
