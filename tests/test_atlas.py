@@ -1,6 +1,7 @@
-# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from unittest.mock import MagicMock, patch
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,protected-access
+import json
 import unittest
+from unittest.mock import MagicMock, patch
 
 from jirabatch.atlas import Atlas
 
@@ -456,8 +457,7 @@ class TestCreateJiraIssues(unittest.TestCase):
 
         captured_payloads = []
 
-        def capture_post(url, data):
-            import json
+        def capture_post(_url, data):
             captured_payloads.append(json.loads(data))
             return MagicMock()
 
