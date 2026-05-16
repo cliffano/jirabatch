@@ -1,7 +1,7 @@
 # Start of Studio gitignore
-examples-tmp/
 core
 docs/
+examples-tmp/
 stage/
 # End of Studio gitignore
 
