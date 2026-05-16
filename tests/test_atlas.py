@@ -258,7 +258,9 @@ class TestCreateJiraIssues(unittest.TestCase):
         mock_jira_cls.return_value = mock_jira
         mock_jira.issue.return_value = mock_created
         mock_jira._session.post.return_value = MagicMock()
-        mock_jira._get_url.return_value = "https://jira.example.com/rest/api/2/issue/bulk"
+        mock_jira._get_url.return_value = (
+            "https://jira.example.com/rest/api/2/issue/bulk"
+        )
 
         with patch("jirabatch.atlas.json_loads") as mock_json_loads:
             mock_json_loads.return_value = {"issues": [{"key": "ENG-1"}], "errors": []}
@@ -282,7 +284,9 @@ class TestCreateJiraIssues(unittest.TestCase):
         mock_jira = MagicMock()
         mock_jira_cls.return_value = mock_jira
         mock_jira._session.post.return_value = MagicMock()
-        mock_jira._get_url.return_value = "https://jira.example.com/rest/api/2/issue/bulk"
+        mock_jira._get_url.return_value = (
+            "https://jira.example.com/rest/api/2/issue/bulk"
+        )
 
         with patch("jirabatch.atlas.json_loads") as mock_json_loads:
             mock_json_loads.return_value = {
@@ -302,7 +306,9 @@ class TestCreateJiraIssues(unittest.TestCase):
             atlas = Atlas(conf)
 
             issues = {
-                "issues": [{"project": "ENG", "issuetype": "Task", "summary": "Bad issue"}]
+                "issues": [
+                    {"project": "ENG", "issuetype": "Task", "summary": "Bad issue"}
+                ]
             }
             atlas.create_jira_issues(issues, batch_size=50)
 
@@ -316,7 +322,9 @@ class TestCreateJiraIssues(unittest.TestCase):
 
         mock_jira = MagicMock()
         mock_jira_cls.return_value = mock_jira
-        mock_jira._get_url.return_value = "https://jira.example.com/rest/api/2/issue/bulk"
+        mock_jira._get_url.return_value = (
+            "https://jira.example.com/rest/api/2/issue/bulk"
+        )
 
         def make_raw_issue(i):
             return {"key": f"ENG-{i}"}
@@ -359,7 +367,9 @@ class TestCreateJiraIssues(unittest.TestCase):
 
         mock_jira = MagicMock()
         mock_jira_cls.return_value = mock_jira
-        mock_jira._get_url.return_value = "https://jira.example.com/rest/api/2/issue/bulk"
+        mock_jira._get_url.return_value = (
+            "https://jira.example.com/rest/api/2/issue/bulk"
+        )
 
         def make_raw_issue(i):
             return {"key": f"ENG-{i}"}
@@ -407,7 +417,9 @@ class TestCreateJiraIssues(unittest.TestCase):
 
         mock_jira = MagicMock()
         mock_jira_cls.return_value = mock_jira
-        mock_jira._get_url.return_value = "https://jira.example.com/rest/api/2/issue/bulk"
+        mock_jira._get_url.return_value = (
+            "https://jira.example.com/rest/api/2/issue/bulk"
+        )
         mock_jira._session.post.return_value = MagicMock()
         mock_jira.issue.return_value = mock_created
 
@@ -451,7 +463,9 @@ class TestCreateJiraIssues(unittest.TestCase):
 
         mock_jira = MagicMock()
         mock_jira_cls.return_value = mock_jira
-        mock_jira._get_url.return_value = "https://jira.example.com/rest/api/2/issue/bulk"
+        mock_jira._get_url.return_value = (
+            "https://jira.example.com/rest/api/2/issue/bulk"
+        )
         mock_jira._session.post.return_value = MagicMock()
         mock_jira.issue.return_value = mock_created
 

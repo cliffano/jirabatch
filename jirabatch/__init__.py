@@ -4,6 +4,7 @@ jirabatch
 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
 ... .
 """
+
 import click
 from cfgrw import CFGRW
 from .atlas import Atlas
