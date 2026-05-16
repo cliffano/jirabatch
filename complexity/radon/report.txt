@@ -9,8 +9,8 @@ jirabatch/atlas.py
     M 233:4 Atlas._format_errors - A (5)
     M 15:4 Atlas.__init__ - A (1)
 jirabatch/__init__.py
-    F 13:0 create_jira_issues - A (1)
-    F 53:0 cli - A (1)
+    F 14:0 create_jira_issues - A (1)
+    F 54:0 cli - A (1)
 jirabatch/logger.py
     F 8:0 init - A (2)
 
