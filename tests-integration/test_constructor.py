@@ -21,4 +21,4 @@ class TestConstructor(unittest.TestCase):
 
     def test_constructor_with_unreachable_jira(self):
         with self.assertRaises((RequestsConnectionError, JIRAError)):
-            create_jira_issues("examples/jirabatch.yaml", "examples/issues.yaml", 50)
+            create_jira_issues("examples/jirabatch.yaml", "examples/defaults-epic-story-subtask.yaml", 50)
