@@ -29,13 +29,13 @@
         "statement": 0,
         "warning": 0
       },
-      "jirabatch.atlas": {
+      "jirabatch.logger": {
         "convention": 0,
         "error": 0,
         "fatal": 0,
         "info": 0,
         "refactor": 0,
-        "statement": 117,
+        "statement": 9,
         "warning": 0
       },
       "jirabatch.__init__": {
@@ -47,22 +47,22 @@
         "statement": 16,
         "warning": 0
       },
-      "jirabatch.logger": {
+      "jirabatch.atlas": {
         "convention": 0,
         "error": 0,
         "fatal": 0,
         "info": 0,
         "refactor": 0,
-        "statement": 9,
+        "statement": 129,
         "warning": 0
       },
-      "tests.__init__": {
+      "tests.test_jirabatch": {
         "convention": 0,
         "error": 0,
         "fatal": 0,
         "info": 0,
         "refactor": 0,
-        "statement": 0,
+        "statement": 43,
         "warning": 0
       },
       "tests.test_logger": {
@@ -80,16 +80,16 @@
         "fatal": 0,
         "info": 0,
         "refactor": 0,
-        "statement": 219,
+        "statement": 246,
         "warning": 0
       },
-      "tests.test_jirabatch": {
+      "tests.__init__": {
         "convention": 0,
         "error": 0,
         "fatal": 0,
         "info": 0,
         "refactor": 0,
-        "statement": 43,
+        "statement": 0,
         "warning": 0
       },
       "test_constructor": {
@@ -111,7 +111,7 @@
         "warning": 0
       }
     },
-    "statement": 453,
+    "statement": 492,
     "error": 0,
     "warning": 0,
     "refactor": 0,
