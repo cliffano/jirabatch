@@ -88,51 +88,30 @@ class Atlas:
             for batch_index, api_result in enumerate(api_results_list):
                 absolute_index = batch_start + batch_index
                 self.logger.debug(f"Result: {api_result}")
-                if api_result["status"] == "Success":
-                    created_issue = api_result["issue"]
-                    self.logger.info(
-                        "Created issue %s: %s",
-                        created_issue.key,
-                        created_issue.fields.summary,
+                if api_result["status"] != "Success":
+                    self._log_issue_creation_failure(api_result)
+                    continue
+
+                created_issue = api_result["issue"]
+                self.logger.info(
+                    "Created issue %s: %s",
+                    created_issue.key,
+                    created_issue.fields.summary,
+                )
+                self.logger.debug(
+                    "Issue %s fields: %s",
+                    created_issue.key,
+                    api_result["input_fields"],
+                )
+
+                pending_subtasks.extend(
+                    self._prepare_pending_subtasks(
+                        subtasks=subtask_map.get(absolute_index, []),
+                        default_fields=default_fields,
+                        issue_fields=issues_fields[absolute_index],
+                        parent_issue_key=created_issue.key,
                     )
-                    self.logger.debug(
-                        "Issue %s fields: %s",
-                        created_issue.key,
-                        api_result["input_fields"],
-                    )
-                    # If the issue has subtasks defined in the configuration,
-                    # prepare their field definitions and add them to the pending
-                    # subtasks list for later creation
-                    if absolute_index in subtask_map:
-                        for subtask in subtask_map[absolute_index]:
-                            subtask_fields = {**default_fields, **subtask}
-                            # Subtasks often omit project in YAML examples; inherit from
-                            # the parent issue/defaults if none supplied in the subtask itself
-                            if "project" not in subtask_fields:
-                                parent_project = issues_fields[absolute_index].get(
-                                    "project", default_fields.get("project")
-                                )
-                                if parent_project:
-                                    subtask_fields["project"] = parent_project
-                            subtask_fields["issuetype"] = subtask_fields.get(
-                                "issuetype", "Subtask"
-                            )
-                            subtask_fields["parent"] = created_issue.key
-                            subtask_fields.pop("subtasks", None)
-                            pending_subtasks.append(
-                                self._prepare_jira_fields(subtask_fields)
-                            )
-                else:
-                    errors_str = self._format_errors(api_result)
-                    fields_str = "\n".join(
-                        f"    {key}: {value}"
-                        for key, value in api_result["input_fields"].items()
-                    )
-                    self.logger.error(
-                        "Failed to create issue:\nErrors:\n%s\nFields:\n%s",
-                        errors_str,
-                        fields_str,
-                    )
+                )
 
         # Create any pending subtasks after all parent issues have been processed,
         # so that subtasks of successfully created parent issues can be created while
@@ -163,6 +142,49 @@ class Atlas:
                             errors_str,
                             fields_str,
                         )
+
+    def _log_issue_creation_failure(self, api_result: dict) -> None:
+        """Log issue creation failure details from a bulk API result."""
+
+        errors_str = self._format_errors(api_result)
+        fields_str = "\n".join(
+            f"    {key}: {value}" for key, value in api_result["input_fields"].items()
+        )
+        self.logger.error(
+            "Failed to create issue:\nErrors:\n%s\nFields:\n%s",
+            errors_str,
+            fields_str,
+        )
+
+    def _prepare_pending_subtasks(
+        self,
+        subtasks: list,
+        default_fields: dict,
+        issue_fields: dict,
+        parent_issue_key: str,
+    ) -> list[dict]:
+        """Prepare Jira field dicts for subtasks of a successfully created issue."""
+
+        if not subtasks:
+            return []
+
+        prepared_subtasks = []
+        for subtask in subtasks:
+            subtask_fields = {**default_fields, **subtask}
+
+            # Subtasks often omit project in YAML examples; inherit from
+            # the parent issue/defaults if none supplied in the subtask itself.
+            if "project" not in subtask_fields:
+                parent_project = issue_fields.get("project", default_fields.get("project"))
+                if parent_project:
+                    subtask_fields["project"] = parent_project
+
+            subtask_fields["issuetype"] = subtask_fields.get("issuetype", "Subtask")
+            subtask_fields["parent"] = parent_issue_key
+            subtask_fields.pop("subtasks", None)
+            prepared_subtasks.append(self._prepare_jira_fields(subtask_fields))
+
+        return prepared_subtasks
 
     def _bulk_create_issues(self, field_list: list[dict]) -> list[dict]:
         """Create issues via the Jira bulk API, capturing full error details.
