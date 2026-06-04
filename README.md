@@ -45,7 +45,7 @@ Issues configuration properties:
 
 | Property | Type | Required | Description | Example |
 |----------|------|----------|-------------|---------|
-| `defaults` | Object | No | Default field values merged into every entry in `issues[]` | `{ project: "ENG", issuetype: "Task" }` |
+| `defaults` | Object | No | Default field values merged into every entry in `issues[]` | `{ project: "KAN", issuetype: "Task" }` |
 | `issues[]` | Array | Yes | List of Jira issues to create | `[{ summary: "Issue summary" }]` |
 | `issues[].project` | String | Yes* | Jira project key | `ENG` |
 | `issues[].issuetype` | String | Yes* | Jira issue type name | `Task` |
@@ -62,15 +62,42 @@ Issues configuration properties:
 | `issues[].duedate` | String | No | Due date (sent as string) | `2026-04-01` |
 | `issues[].timetracking` | Object | No | Jira timetracking object | `{ originalEstimate: "3d", remainingEstimate: "2d" }` |
 | `issues[].security` | String | No | Security level name | `Internal` |
-| `issues[].parent` | String | No | Parent issue key | `ENG-100` |
-| `issues[].epic` | String | No | Epic issue key (normalized to parent) | `ENG-10` |
+| `issues[].parent` | String | No | Parent issue key | `KAN-100` |
+| `issues[].epic` | String | No | Epic issue key (normalized to parent) | `KAN-10` |
 | `issues[].customFields` | Object | No | Map of Jira custom field IDs to values | `{ customfield_10100: "Platform Team" }` |
 | `issues[].subtasks[]` | Array[Object] | No | Subtasks created after parent issue succeeds | `[{ summary: "Subtask 1" }]` |
 | `issues[].subtasks[].summary` | String | Yes | Subtask summary | `Update cert in service A` |
 | `issues[].subtasks[].issuetype` | String | No | Subtask issue type (defaults to `Subtask`) | `Sub-task` |
 
-Colophon
---------
+## FAQ
+
+*How to find reporter and assignee values?*
+
+`reporter` and `assignee` must be Jira `accountId` values, not display names or email addresses.
+
+Visit `https://<id>.atlassian.net/rest/api/3/user/search?query=<user_name_or_email>`
+and you will receive a JSON response:
+
+```json
+[
+    {
+        "accountId": "5b10a2844c20165700ede21g",
+        "displayName": "Some User",
+        ...
+    }
+]
+```
+
+Copy the `accountId` value and use it in your issues file:
+
+```yaml
+issues:
+    - summary: Some Jira issue
+      reporter: "5b10a2844c20165700ede21g"
+      assignee: "5b10a2844c20165700ede21g"
+```
+
+## Colophon
 
 [Developer's Guide](https://cliffano.github.io/developers_guide.html#python)
 
