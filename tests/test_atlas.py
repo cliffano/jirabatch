@@ -11,13 +11,13 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_required_fields_only(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "Minimal task",
         }
         jira_fields = Atlas._prepare_jira_fields(config_fields)
         assert jira_fields == {
-            "project": {"key": "ENG"},
+            "project": {"key": "KAN"},
             "issuetype": {"name": "Task"},
             "summary": "Minimal task",
             "description": None,
@@ -25,7 +25,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_description(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "description": "Some details",
@@ -35,7 +35,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_reporter(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "reporter": "tech-lead-account-id",
@@ -45,7 +45,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_assignee(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "assignee": "cliffano-account-id",
@@ -55,7 +55,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_priority(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "priority": "High",
@@ -65,7 +65,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_labels(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "labels": ["infra", "aws"],
@@ -75,7 +75,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_components(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "components": ["Cloud", "Backend"],
@@ -85,7 +85,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_versions(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "versions": ["2025.4"],
@@ -95,7 +95,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_fix_versions(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "fixVersions": ["2026.1", "2026.2"],
@@ -105,7 +105,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_environment(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "environment": "Production AWS us-east-1",
@@ -115,7 +115,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_due_date(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "duedate": "2026-04-01",
@@ -125,7 +125,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_timetracking(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "timetracking": {
@@ -141,7 +141,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_security(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "security": "Confidential",
@@ -151,27 +151,27 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_parent(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Sub-task",
             "summary": "A sub-task",
-            "parent": "ENG-100",
+            "parent": "KAN-100",
         }
         jira_fields = Atlas._prepare_jira_fields(config_fields)
-        assert jira_fields["parent"] == {"key": "ENG-100"}
+        assert jira_fields["parent"] == {"key": "KAN-100"}
 
     def test_epic(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Story",
             "summary": "A story under an epic",
-            "epic": "ENG-10",
+            "epic": "KAN-10",
         }
         jira_fields = Atlas._prepare_jira_fields(config_fields)
-        assert jira_fields["parent"] == {"key": "ENG-10"}
+        assert jira_fields["parent"] == {"key": "KAN-10"}
 
     def test_custom_fields_team_and_sprint(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "customFields": {
@@ -185,7 +185,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_custom_fields_do_not_overwrite_standard_fields(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "A task",
             "priority": "High",
@@ -199,7 +199,7 @@ class TestPrepareJiraFields(unittest.TestCase):
 
     def test_all_fields_together(self):
         config_fields = {
-            "project": "ENG",
+            "project": "KAN",
             "issuetype": "Task",
             "summary": "Full task",
             "description": "All fields set",
@@ -214,14 +214,14 @@ class TestPrepareJiraFields(unittest.TestCase):
             "duedate": "2026-04-01",
             "timetracking": {"originalEstimate": "5d"},
             "security": "Internal",
-            "parent": "ENG-50",
+            "parent": "KAN-50",
             "customFields": {
                 "customfield_10100": "Platform Team",
                 "customfield_10200": "Sprint 42",
             },
         }
         jira_fields = Atlas._prepare_jira_fields(config_fields)
-        assert jira_fields["project"] == {"key": "ENG"}
+        assert jira_fields["project"] == {"key": "KAN"}
         assert jira_fields["issuetype"] == {"name": "Task"}
         assert jira_fields["summary"] == "Full task"
         assert jira_fields["description"] == "All fields set"
@@ -236,7 +236,7 @@ class TestPrepareJiraFields(unittest.TestCase):
         assert jira_fields["duedate"] == "2026-04-01"
         assert jira_fields["timetracking"] == {"originalEstimate": "5d"}
         assert jira_fields["security"] == {"name": "Internal"}
-        assert jira_fields["parent"] == {"key": "ENG-50"}
+        assert jira_fields["parent"] == {"key": "KAN-50"}
         assert jira_fields["customfield_10100"] == "Platform Team"
         assert jira_fields["customfield_10200"] == "Sprint 42"
 
@@ -251,7 +251,7 @@ class TestCreateJiraIssues(unittest.TestCase):
         mock_init.return_value = mock_logger
 
         mock_created = MagicMock()
-        mock_created.key = "ENG-1"
+        mock_created.key = "KAN-1"
         mock_created.fields.summary = "A task"
 
         mock_jira = MagicMock()
@@ -263,17 +263,17 @@ class TestCreateJiraIssues(unittest.TestCase):
         )
 
         with patch("jirabatch.atlas.json_loads") as mock_json_loads:
-            mock_json_loads.return_value = {"issues": [{"key": "ENG-1"}], "errors": []}
+            mock_json_loads.return_value = {"issues": [{"key": "KAN-1"}], "errors": []}
 
             conf = {"url": "https://jira.example.com", "user": "u", "api_token": "t"}
             atlas = Atlas(conf)
 
             issues = {
-                "issues": [{"project": "ENG", "issuetype": "Task", "summary": "A task"}]
+                "issues": [{"project": "KAN", "issuetype": "Task", "summary": "A task"}]
             }
             atlas.create_jira_issues(issues, batch_size=50)
 
-        mock_logger.info.assert_any_call("Created issue %s: %s", "ENG-1", "A task")
+        mock_logger.info.assert_any_call("Created issue %s: %s", "KAN-1", "A task")
 
     @patch("jirabatch.atlas.JIRA")
     @patch("jirabatch.atlas.init")
@@ -307,7 +307,7 @@ class TestCreateJiraIssues(unittest.TestCase):
 
             issues = {
                 "issues": [
-                    {"project": "ENG", "issuetype": "Task", "summary": "Bad issue"}
+                    {"project": "KAN", "issuetype": "Task", "summary": "Bad issue"}
                 ]
             }
             atlas.create_jira_issues(issues, batch_size=50)
@@ -327,11 +327,11 @@ class TestCreateJiraIssues(unittest.TestCase):
         )
 
         def make_raw_issue(i):
-            return {"key": f"ENG-{i}"}
+            return {"key": f"KAN-{i}"}
 
         def make_mock_issue(i):
             mock_issue = MagicMock()
-            mock_issue.key = f"ENG-{i}"
+            mock_issue.key = f"KAN-{i}"
             mock_issue.fields.summary = f"Task {i}"
             return mock_issue
 
@@ -351,7 +351,7 @@ class TestCreateJiraIssues(unittest.TestCase):
 
             issues = {
                 "issues": [
-                    {"project": "ENG", "issuetype": "Task", "summary": f"Task {i}"}
+                    {"project": "KAN", "issuetype": "Task", "summary": f"Task {i}"}
                     for i in range(num_issues)
                 ]
             }
@@ -372,11 +372,11 @@ class TestCreateJiraIssues(unittest.TestCase):
         )
 
         def make_raw_issue(i):
-            return {"key": f"ENG-{i}"}
+            return {"key": f"KAN-{i}"}
 
         def make_mock_issue(i):
             mock_issue = MagicMock()
-            mock_issue.key = f"ENG-{i}"
+            mock_issue.key = f"KAN-{i}"
             mock_issue.fields.summary = f"Task {i}"
             return mock_issue
 
@@ -397,7 +397,7 @@ class TestCreateJiraIssues(unittest.TestCase):
 
             issues = {
                 "issues": [
-                    {"project": "ENG", "issuetype": "Task", "summary": f"Task {i}"}
+                    {"project": "KAN", "issuetype": "Task", "summary": f"Task {i}"}
                     for i in range(num_issues)
                 ]
             }
@@ -412,7 +412,7 @@ class TestCreateJiraIssues(unittest.TestCase):
         mock_init.return_value = mock_logger
 
         mock_created = MagicMock()
-        mock_created.key = "ENG-1"
+        mock_created.key = "KAN-1"
         mock_created.fields.summary = "Good task"
 
         mock_jira = MagicMock()
@@ -425,7 +425,7 @@ class TestCreateJiraIssues(unittest.TestCase):
 
         with patch("jirabatch.atlas.json_loads") as mock_json_loads:
             mock_json_loads.return_value = {
-                "issues": [{"key": "ENG-1"}],
+                "issues": [{"key": "KAN-1"}],
                 "errors": [
                     {
                         "failedElementNumber": 1,
@@ -442,13 +442,13 @@ class TestCreateJiraIssues(unittest.TestCase):
 
             issues = {
                 "issues": [
-                    {"project": "ENG", "issuetype": "Task", "summary": "Good task"},
-                    {"project": "ENG", "issuetype": "Task", "summary": "Bad task"},
+                    {"project": "KAN", "issuetype": "Task", "summary": "Good task"},
+                    {"project": "KAN", "issuetype": "Task", "summary": "Bad task"},
                 ]
             }
             atlas.create_jira_issues(issues, batch_size=50)
 
-        mock_logger.info.assert_any_call("Created issue %s: %s", "ENG-1", "Good task")
+        mock_logger.info.assert_any_call("Created issue %s: %s", "KAN-1", "Good task")
         mock_logger.error.assert_called_once()
 
     @patch("jirabatch.atlas.JIRA")
@@ -458,7 +458,7 @@ class TestCreateJiraIssues(unittest.TestCase):
         mock_init.return_value = mock_logger
 
         mock_created = MagicMock()
-        mock_created.key = "ENG-1"
+        mock_created.key = "KAN-1"
         mock_created.fields.summary = "A task"
 
         mock_jira = MagicMock()
@@ -478,7 +478,7 @@ class TestCreateJiraIssues(unittest.TestCase):
         mock_jira._session.post.side_effect = capture_post
 
         with patch("jirabatch.atlas.json_loads") as mock_json_loads:
-            mock_json_loads.return_value = {"issues": [{"key": "ENG-1"}], "errors": []}
+            mock_json_loads.return_value = {"issues": [{"key": "KAN-1"}], "errors": []}
 
             conf = {"url": "https://jira.example.com", "user": "u", "api_token": "t"}
             atlas = Atlas(conf)
@@ -486,7 +486,7 @@ class TestCreateJiraIssues(unittest.TestCase):
             issues = {
                 "issues": [
                     {
-                        "project": "ENG",
+                        "project": "KAN",
                         "issuetype": "Task",
                         "summary": "A task",
                         "customFields": {
@@ -501,3 +501,59 @@ class TestCreateJiraIssues(unittest.TestCase):
         sent_fields = captured_payloads[0]["issueUpdates"][0]["fields"]
         assert sent_fields["customfield_10100"] == "Platform Team"
         assert sent_fields["customfield_10200"] == "Sprint 42"
+
+    @patch("jirabatch.atlas.JIRA")
+    @patch("jirabatch.atlas.init")
+    def test_subtask_inherits_parent_project_when_not_provided(
+        self, mock_init, mock_jira_cls
+    ):
+        mock_logger = MagicMock()
+        mock_init.return_value = mock_logger
+
+        parent_issue = MagicMock()
+        parent_issue.key = "KAN-1"
+        parent_issue.fields.summary = "Parent task"
+
+        subtask_issue = MagicMock()
+        subtask_issue.key = "KAN-2"
+        subtask_issue.fields.summary = "Child subtask"
+
+        mock_jira = MagicMock()
+        mock_jira_cls.return_value = mock_jira
+        mock_jira._get_url.return_value = (
+            "https://jira.example.com/rest/api/2/issue/bulk"
+        )
+        mock_jira.issue.side_effect = [parent_issue, subtask_issue]
+
+        captured_payloads = []
+
+        def capture_post(_url, data):
+            captured_payloads.append(json.loads(data))
+            return MagicMock()
+
+        mock_jira._session.post.side_effect = capture_post
+
+        with patch("jirabatch.atlas.json_loads") as mock_json_loads:
+            mock_json_loads.side_effect = [
+                {"issues": [{"key": "KAN-1"}], "errors": []},
+                {"issues": [{"key": "KAN-2"}], "errors": []},
+            ]
+
+            conf = {"url": "https://jira.example.com", "user": "u", "api_token": "t"}
+            atlas = Atlas(conf)
+
+            issues = {
+                "issues": [
+                    {
+                        "project": "KAN",
+                        "issuetype": "Task",
+                        "summary": "Parent task",
+                        "subtasks": [{"summary": "Child subtask"}],
+                    }
+                ]
+            }
+            atlas.create_jira_issues(issues, batch_size=50)
+
+        subtask_fields = captured_payloads[1]["issueUpdates"][0]["fields"]
+        assert subtask_fields["project"] == {"key": "KAN"}
+        assert subtask_fields["parent"] == {"key": "KAN-1"}

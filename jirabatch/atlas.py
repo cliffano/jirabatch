@@ -106,6 +106,14 @@ class Atlas:
                     if absolute_index in subtask_map:
                         for subtask in subtask_map[absolute_index]:
                             subtask_fields = {**default_fields, **subtask}
+                            # Subtasks often omit project in YAML examples; inherit from
+                            # the parent issue/defaults if none supplied in the subtask itself
+                            if "project" not in subtask_fields:
+                                parent_project = issues_fields[absolute_index].get(
+                                    "project", default_fields.get("project")
+                                )
+                                if parent_project:
+                                    subtask_fields["project"] = parent_project
                             subtask_fields["issuetype"] = subtask_fields.get(
                                 "issuetype", "Subtask"
                             )
