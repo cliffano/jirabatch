@@ -1,0 +1,32 @@
+---
+defaults:
+  project: "KAN"
+  labels:
+    - "automation"
+    - "jirabatch"
+    - "defaults"
+
+issues:
+  - issuetype: "Epic"
+    summary: "Epic for stories with defaults"
+    description: "Epic parent for stories created using project and labels defaults."
+
+  - issuetype: "Story"
+    summary: "Story 1 under epic"
+    description: "First story linked to the epic."
+    epic: "KAN-33"
+
+  - issuetype: "Story"
+    summary: "Story 2 under epic"
+    description: "Second story linked to the epic."
+    epic: "KAN-33"
+
+  - issuetype: "Story"
+    summary: "Story 3 under epic with subtasks"
+    description: "Third story linked to the epic and containing subtasks."
+    epic: "KAN-33"
+    subtasks:
+      - summary: "Subtask 1 for story 3"
+        description: "First subtask under story 3."
+      - summary: "Subtask 2 for story 3"
+        description: "Second subtask under story 3."

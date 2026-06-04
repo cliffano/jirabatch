@@ -1,0 +1,5 @@
+---
+issues:
+  - project: "KAN"
+    issuetype: "Task"
+    summary: "Simple task example"

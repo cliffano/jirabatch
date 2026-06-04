@@ -1,0 +1,12 @@
+---
+issues:
+  - project: "KAN"
+    issuetype: "Epic"
+    summary: "Epic for child story example"
+    description: "Epic created before creating an issue linked to this epic."
+
+  - project: "KAN"
+    issuetype: "Story"
+    summary: "Story linked to an epic"
+    description: "Story that should be linked to an epic via parent."
+    epic: "KAN-33"

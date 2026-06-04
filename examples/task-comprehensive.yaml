@@ -1,0 +1,37 @@
+---
+issues:
+  - project: "KAN"
+    issuetype: "Task"
+    summary: "Comprehensive task example"
+    description: "Task payload with most supported fields populated, including subtasks."
+    reporter: "557058:bfef1ae3-453d-4f0f-90cd-76843e1d2ac7"
+    assignee: "557058:bfef1ae3-453d-4f0f-90cd-76843e1d2ac7"
+    priority: "High"
+    labels:
+      - "comprehensive"
+      - "task"
+      - "operations"
+    components:
+      - "Operations"
+      - "Security"
+    # versions:
+    #   - "2026.1"
+    # fixVersions:
+    #   - "2026.2"
+    environment: "Production"
+    duedate: "2026-10-31"
+    timetracking:
+      originalEstimate: "2d"
+      remainingEstimate: "1d"
+    # security: "Internal"
+    epic: "KAN-33"
+    # customFields:
+    #   customfield_10100: "Ops Team"
+    #   customfield_10200: "Sprint 1"
+    subtasks:
+      - project: "KAN"
+        summary: "Gather change approvals"
+        description: "Collect all required stakeholder approvals."
+      - project: "KAN"
+        summary: "Execute maintenance window"
+        description: "Perform maintenance and update runbook outcomes."

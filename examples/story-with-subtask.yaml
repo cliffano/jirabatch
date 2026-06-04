@@ -1,0 +1,9 @@
+---
+issues:
+  - project: "KAN"
+    issuetype: "Story"
+    summary: "Parent story with one task"
+    description: "This issue demonstrates automatic story creation."
+    subtasks:
+      - summary: "Task 1 for parent story"
+        description: "Simple task linked to the parent story."

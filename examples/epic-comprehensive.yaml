@@ -1,0 +1,29 @@
+---
+issues:
+  - project: "KAN"
+    issuetype: "Epic"
+    summary: "Comprehensive epic example"
+    description: "Comprehensive epic example with most supported fields populated."
+    reporter: "557058:bfef1ae3-453d-4f0f-90cd-76843e1d2ac7"
+    assignee: "557058:bfef1ae3-453d-4f0f-90cd-76843e1d2ac7"
+    priority: "High"
+    labels:
+      - "infra"
+      - "platform"
+    components:
+      - "Platform"
+      - "Delivery"
+    # versions:
+    #   - "2026.1"
+    # fixVersions:
+    #   - "2026.2"
+    environment: "Production"
+    startdate: "2026-01-01"
+    duedate: "2026-12-31"
+    timetracking:
+      originalEstimate: "5d"
+      remainingEstimate: "5d"
+    # security: "Internal"
+    # customFields:
+    #   customfield_10100: "Platform Team"
+    #   customfield_10200: "Sprint 1"

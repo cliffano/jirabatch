@@ -1,0 +1,5 @@
+---
+issues:
+  - project: "KAN"
+    issuetype: "Epic"
+    summary: "Simple epic example"

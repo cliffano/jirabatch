@@ -1,0 +1,9 @@
+---
+issues:
+  - project: "KAN"
+    issuetype: "Task"
+    summary: "Parent task with one subtask"
+    description: "This issue demonstrates automatic subtask creation."
+    subtasks:
+      - summary: "Subtask 1 for parent task"
+        description: "Simple subtask linked to the parent task."

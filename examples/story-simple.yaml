@@ -1,0 +1,5 @@
+---
+issues:
+  - project: "KAN"
+    issuetype: "Story"
+    summary: "Simple story example"
