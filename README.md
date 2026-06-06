@@ -64,9 +64,10 @@ Issues configuration properties:
 | `issues[].parent` | String | No | Parent issue key | `KAN-100` |
 | `issues[].epic` | String | No | Epic issue key (normalized to parent) | `KAN-10` |
 | `issues[].customFields` | Object | No | Map of Jira custom field IDs to values | `{ customfield_10100: "Platform Team" }` |
-| `issues[].subtasks[]` | Array[Object] | No | Subtasks created after parent issue succeeds | `[{ summary: "Subtask 1" }]` |
-| `issues[].subtasks[].summary` | String | Yes | Subtask summary | `Update cert in service A` |
-| `issues[].subtasks[].issuetype` | String | No | Subtask issue type (defaults to `Subtask`) | `Sub-task` |
+| `issues[].subtasks[]` | Array[Object] | No | Subtasks created after parent issue succeeds. Subtasks belong to the same project as the parent issue | `[{ summary: "Subtask 1" }]` |
+| `issues[].subtasks[].summary` | String | Yes* | Subtask summary | `Update cert in service A` |
+| `issues[].subtasks[].description` | String | No | Subtask description | `Roll out cert to service A` |
+| `issues[].subtasks[].issuetype` | String | No | Must be a Jira subtask issue type name. Defaults to `Subtask`; set explicitly to your project subtask type (for example `Sub-task`) | `Sub-task` |
 
 ## FAQ
 
