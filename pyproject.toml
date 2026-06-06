@@ -31,18 +31,18 @@ classifiers = [
   [tool.poetry.dependencies]
   python = "^3.10"
   cfgrw = "~1.1.0"
-  click = "~8.3.3"
+  click = "~8.4.1"
   conflog = "~2.1.1"
   jira = "~3.10.5"
   PyYAML = "~6.0.3"
 
 [tool.poetry.group.dev.dependencies]
-black = "~26.5.0"
+black = "~26.5.1"
 twine = "~6.2.0"
 wheel = "~0.47.0"
 
 [tool.poetry.group.test.dependencies]
-coverage = "~7.14.0"
+coverage = "~7.14.1"
 numpy = "1.26.4"
 pylint = "~4.0.5"
 pytest = "~9.0.3"

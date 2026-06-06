@@ -175,7 +175,9 @@ class Atlas:
             # Subtasks often omit project in YAML examples; inherit from
             # the parent issue/defaults if none supplied in the subtask itself.
             if "project" not in subtask_fields:
-                parent_project = issue_fields.get("project", default_fields.get("project"))
+                parent_project = issue_fields.get(
+                    "project", default_fields.get("project")
+                )
                 if parent_project:
                     subtask_fields["project"] = parent_project
 
