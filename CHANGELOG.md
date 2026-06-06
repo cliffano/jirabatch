@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade PieMaker to 2.4.0
 
+### Fixed
+- Upgrade deps to latest
+
 ## 0.10.0 - 2026-06-04
 ### Added
 - Initial version
