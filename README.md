@@ -8,9 +8,7 @@
 
 # JiraBatch
 
-Jira Batch is a batch Jira issues creator.
-
-Define the issues in 
+JiraBatch is a Python CLI for creating multiple Jira issues in batches via a YAML definition.
 
 ## Installation
 
