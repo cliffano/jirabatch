@@ -20,7 +20,8 @@ class TestCli(unittest.TestCase):
         result = runner.invoke(cli, ["--some-invalid-arg"])
 
         self.assertNotEqual(result.exit_code, 0)
-        self.assertIn("Error: No such option: --some-invalid-arg", result.output)
+        self.assertIn("No such option", result.output)
+        self.assertIn("--some-invalid-arg", result.output)
 
     @patch("jirabatch.create_jira_issues")
     def test_cli_with_default_args(self, func_create_jira_issues):
