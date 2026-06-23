@@ -1,8 +1,6 @@
-jirabatch/logger.py - A
 jirabatch/__init__.py - A
 jirabatch/atlas.py - A
-jirabatch/logger.py
-    F 8:0 init - A (2)
+jirabatch/logger.py - A
 jirabatch/__init__.py
     F 14:0 create_jira_issues - A (1)
     F 54:0 cli - A (1)
@@ -15,6 +13,8 @@ jirabatch/atlas.py
     M 265:4 Atlas._format_errors - A (5)
     M 146:4 Atlas._log_issue_creation_failure - A (2)
     M 15:4 Atlas.__init__ - A (1)
+jirabatch/logger.py
+    F 8:0 init - A (2)
 
 11 blocks (classes, functions, methods) analyzed.
 Average complexity: B (5.545454545454546)
