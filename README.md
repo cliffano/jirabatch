@@ -22,6 +22,14 @@ Run jirabatch with specified config file and issues file:
 
     jirabatch --conf-file jirabatch.yaml --issues-file issues.yaml
 
+Run jirabatch without `--conf-file` to load Jira settings from environment
+variables prefixed with `jirabatch_`:
+
+    export jirabatch_url="https://someorg.atlassian.net"
+    export jirabatch_user="someuser@example.com"
+    export jirabatch_api_token="sometoken12345"
+    jirabatch --issues-file issues.yaml
+
 Show help guide:
 
     jirabatch --help
@@ -96,6 +104,66 @@ issues:
       reporter: "5b10a2844c20165700ede21g"
       assignee: "5b10a2844c20165700ede21g"
 ```
+
+*How to find custom field values?*
+
+Use Jira field metadata to find custom field IDs (for example `customfield_10100`)
+and then check valid values from issue create metadata.
+
+Visit `https://<id>.atlassian.net/rest/api/3/field`
+and you will receive a JSON response:
+
+```json
+[
+    {
+        "id": "customfield_10100",
+        "name": "Team",
+        "custom": true,
+        ...
+    }
+]
+```
+
+Then visit
+`https://<id>.atlassian.net/rest/api/3/issue/createmeta?projectKeys=<project_key>&expand=projects.issuetypes.fields`
+to inspect allowed values for your project and issue type.
+
+```
+{
+    ...
+    "projects": [{
+        ...
+        "issuetypes": [{
+            "customfield_10106": {
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+                    "customId": 10106
+                },
+                "name": "CustomFieldShortTextEpic",
+                "key": "customfield_10106",
+                "hasDefaultValue": false,
+                "operations": [
+                    "set"
+                ]
+                },
+                ...
+        }]
+    }]
+}
+```
+
+Copy the custom field ID and use it in your issues file:
+
+```yaml
+issues:
+    - summary: Some Jira issue
+      customFields:
+        customfield_10100: "Platform Team"
+```
+
+
 
 ## Colophon
 
